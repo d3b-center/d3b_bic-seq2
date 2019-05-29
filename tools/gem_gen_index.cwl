@@ -9,20 +9,22 @@ requirements:
     ramMin: 48000
     coresMin: 36
   - class: InlineJavascriptRequirement
-baseCommand: [gem-indexer]
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -i $(inputs.canonical_fasta.path)
-      -T 36
-      -c dna
-      -o $(inputs.canonical_fasta.nameroot)
+      set -eo pipefail
 
+      for chrom in `seq 1 22` X Y; do
+        echo "samtools faidx $(inputs.canonical_fasta.path) chr$chrom > chr$chrom.fa && gem-indexer -i chr$chrom.fa -T 4 -c dna -o chr$chrom" >> cmd_list.txt
+      done
+
+      cat cmd_list.txt | xargs -P 9 -ICMD sh -c "CMD"
 inputs:
   canonical_fasta: {type: File, doc: "Fasta file with just chr1-22, XY"}
 outputs:
   gem_index:
-    type: File
+    type: File[]
     outputBinding:
       glob: '*.gem'

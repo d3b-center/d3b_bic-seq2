@@ -6,8 +6,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'migbro/gem:pre3'
   - class: ResourceRequirement
-    ramMin: 48000
-    coresMin: 36
+    ramMin: 32000
+    coresMin: 16
   - class: InlineJavascriptRequirement
 baseCommand: [gem-mappability]
 arguments:
@@ -16,7 +16,8 @@ arguments:
     valueFrom: >-
       -I $(inputs.gem_index.path)
       -l $(inputs.bp_len)
-      -t 36
+      -t 16
+      -m 2
       -o $(inputs.gem_index.nameroot)_$(inputs.bp_len)
 
 inputs:
@@ -24,6 +25,6 @@ inputs:
   bp_len: {type: int, doc: "bp length to generate mappability file for.  Corresponnds with max input read length"}
 outputs:
   mappa_file:
-    type: File[]
+    type: File
     outputBinding:
       glob: '*.mappability'
