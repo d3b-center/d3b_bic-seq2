@@ -9,7 +9,7 @@ requirements:
     ramMin: 48000
     coresMin: 36
   - class: InlineJavascriptRequirement
-baseCommand: [/GEM-binaries-Linux-x86_64-core_i3-20130406-045632/bin/gem-mappability]
+baseCommand: [gem-mappability]
 arguments:
   - position: 1
     shellQuote: false

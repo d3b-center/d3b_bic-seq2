@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: pre_map_files
+id: prep_fasta_files
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -9,20 +9,18 @@ requirements:
     ramMin: 2000
     coresMin: 2
   - class: InlineJavascriptRequirement
-baseCommand: ["/bin/bash", "-c"]
+baseCommand: [tar, -xzf]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      set -eo pipefail
+      $(inputs.ref_chrs.path)
 
-      for chrom in `seq 1 22` X Y; do
-        grep -E "^chr$chrom\s+" $(inputs.interval_list.path) | cut -f 2,3 > chr$chrom.mappability.txt
-      done
+      rm $(inputs.ref_chrs.nameroot.substring(0,(inputs.ref_chrs.nameroot.length-4)))/chrM.fa
 inputs:
-  interval_list: {type: File, doc: "Can be bed or gatk interval_list"}
+  ref_chrs: {type: File, doc: "Tar gzipped per-chromosome fasta"}
 outputs:
-  map_file:
+  chr_fa:
     type: File[]
     outputBinding:
-      glob: '*.txt'
+      glob: "$(inputs.ref_chrs.nameroot.substring(0,(inputs.ref_chrs.nameroot.length-4)))/*.fa"
