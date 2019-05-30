@@ -7,7 +7,7 @@ requirements:
 
 inputs:
   canonical_fasta: {type: File, doc: "Fasta file with just chr1-22, XY"}
-  bp_len: {type: int, doc: "bp length to generate mappability file for.  Corresponnds with max input read length"}
+  bp_len: {type: int, doc: "bp length to generate mappability file for.  Corresponds with max input read length"}
 
 outputs:
   mappa_files: {type: 'File[]', outputSource: gem_gen_mappability/mappa_file}
