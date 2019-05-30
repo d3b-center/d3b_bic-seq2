@@ -1,13 +1,13 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: pre_map_files
+id: gem_indexer
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'ubuntu:18.04'
+    dockerPull: 'migbro/gem:pre3'
   - class: ResourceRequirement
-    ramMin: 2000
-    coresMin: 2
+    ramMin: 48000
+    coresMin: 36
   - class: InlineJavascriptRequirement
 baseCommand: ["/bin/bash", "-c"]
 arguments:
@@ -17,12 +17,14 @@ arguments:
       set -eo pipefail
 
       for chrom in `seq 1 22` X Y; do
-        grep -E "^chr$chrom\s+" $(inputs.interval_list.path) | cut -f 2,3 > chr$chrom.mappability.txt
+        echo "samtools faidx $(inputs.canonical_fasta.path) chr$chrom > chr$chrom.fa && gem-indexer -i chr$chrom.fa -T 4 -c dna -o chr$chrom" >> cmd_list.txt
       done
+
+      cat cmd_list.txt | xargs -P 9 -ICMD sh -c "CMD"
 inputs:
-  interval_list: {type: File, doc: "Can be bed or gatk interval_list"}
+  canonical_fasta: {type: File, doc: "Fasta file with just chr1-22, XY"}
 outputs:
-  map_file:
+  gem_index:
     type: File[]
     outputBinding:
-      glob: '*.txt'
+      glob: '*.gem'
