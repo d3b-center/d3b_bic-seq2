@@ -6,8 +6,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'migbro/gem:pre3'
   - class: ResourceRequirement
-    ramMin: 4000
-    coresMin: 2
+    ramMin: 8000
+    coresMin: 4
   - class: InlineJavascriptRequirement
 baseCommand: [gem-mappability]
 arguments:
@@ -16,7 +16,7 @@ arguments:
     valueFrom: >-
       -I $(inputs.gem_index.path)
       -l $(inputs.bp_len)
-      -t 2
+      -t 4
       -m 2
       -o $(inputs.gem_index.nameroot)_$(inputs.bp_len)
 
